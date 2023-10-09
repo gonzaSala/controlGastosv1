@@ -1,3 +1,4 @@
+import 'package:app_control_gastos/screens/addValue.dart';
 import 'package:flutter/material.dart';
 
 //Icons
@@ -39,7 +40,13 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.blueAccent,
         hoverColor: const Color.fromARGB(146, 0, 111, 166),
         child: const Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const AddNewExpense(),
+            ),
+          );
+        },
       ),
     );
   }

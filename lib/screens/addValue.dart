@@ -1,3 +1,4 @@
+import 'package:app_control_gastos/services/firebase_service.dart';
 import 'package:flutter/material.dart';
 
 class AddNewExpense extends StatefulWidget {
@@ -28,6 +29,20 @@ class _AddNewExpenseState extends State<AddNewExpense> {
             controller: newExpenseControlName,
             decoration: const InputDecoration(hintText: 'Ingrese el nombre'),
           ),
+          ElevatedButton(
+              onPressed: () async {
+                await addExpense(newExpenseControlName.text,
+                        int.parse(newExpenseControlCantidad.text))
+                    .then((_) {
+                  Navigator.pop(context);
+                });
+              },
+              child: Text('Guardar')),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Cancelar')),
         ]),
       ),
     );

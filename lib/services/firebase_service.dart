@@ -15,3 +15,7 @@ Future<List> getValue() async {
 
   return gastos;
 }
+
+Future<void> addExpense(String name, int value) async {
+  await db.collection('gastos').add({'nombre': name, 'valor': value});
+}
