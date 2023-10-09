@@ -1,4 +1,5 @@
 import 'package:app_control_gastos/screens/addValue.dart';
+import 'package:app_control_gastos/screens/historial.dart';
 import 'package:flutter/material.dart';
 
 //FIREBASE
@@ -27,6 +28,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const HomePage(),
+        '/add': (context) => const AddNewExpense(),
+        '/his': (context) => const Historial(),
       },
     );
   }

@@ -9,13 +9,23 @@ Future<List> getValue() async {
 
   QuerySnapshot queryGastos = await collectionReferenceGastos.get();
 
-  queryGastos.docs.forEach((element) {
-    gastos.add(element.data());
-  });
+  for (var doc in queryGastos.docs) {
+    final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    final expense = {
+      'nombre': data['nombre'],
+      'valor': data['valor'],
+      'uID': doc.id,
+    };
 
+    gastos.add(expense);
+  }
   return gastos;
 }
 
 Future<void> addExpense(String name, int value) async {
   await db.collection('gastos').add({'nombre': name, 'valor': value});
+}
+
+Future<void> deleteExpense(String uID) async {
+  await db.collection('gastos').doc(uID).delete();
 }

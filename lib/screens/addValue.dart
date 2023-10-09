@@ -22,27 +22,29 @@ class _AddNewExpenseState extends State<AddNewExpense> {
         padding: const EdgeInsets.all(15.0),
         child: Column(children: [
           TextField(
-            controller: newExpenseControlCantidad,
-            decoration: const InputDecoration(hintText: 'Ingrese el monto'),
-          ),
-          TextField(
             controller: newExpenseControlName,
             decoration: const InputDecoration(hintText: 'Ingrese el nombre'),
           ),
-          ElevatedButton(
-              onPressed: () async {
-                await addExpense(newExpenseControlName.text,
-                        int.parse(newExpenseControlCantidad.text))
-                    .then((_) {
+          TextField(
+            controller: newExpenseControlCantidad,
+            decoration: const InputDecoration(hintText: 'Ingrese el monto'),
+          ),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+            ElevatedButton(
+                onPressed: () async {
+                  await addExpense(newExpenseControlName.text,
+                          int.parse(newExpenseControlCantidad.text))
+                      .then((_) {
+                    Navigator.pop(context);
+                  });
+                },
+                child: Text('Guardar')),
+            ElevatedButton(
+                onPressed: () {
                   Navigator.pop(context);
-                });
-              },
-              child: Text('Guardar')),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Cancelar')),
+                },
+                child: Text('Cancelar'))
+          ])
         ]),
       ),
     );

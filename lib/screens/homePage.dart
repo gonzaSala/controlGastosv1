@@ -1,4 +1,5 @@
 import 'package:app_control_gastos/screens/addValue.dart';
+import 'package:app_control_gastos/screens/historial.dart';
 import 'package:flutter/material.dart';
 
 //Icons
@@ -30,7 +31,13 @@ class _HomePageState extends State<HomePage> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            bottomAction(FontAwesomeIcons.clockRotateLeft, () {}),
+            bottomAction(FontAwesomeIcons.clockRotateLeft, () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const Historial(),
+                ),
+              );
+            }),
             bottomAction(FontAwesomeIcons.chartPie, () {}),
           ],
         ),
