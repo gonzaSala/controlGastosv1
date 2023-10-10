@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:app_control_gastos/services/firebase_service.dart';
+import 'package:intl/intl.dart';
 
 class Historial extends StatefulWidget {
   const Historial({Key? key});
@@ -45,6 +47,12 @@ class _HistorialState extends State<Historial> {
                             TextButton(
                               onPressed: () {
                                 Navigator.pop(context, false);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                        'Se eliminó el gasto: ${snapshot.data?[index]['nombre']}'),
+                                  ),
+                                );
                               },
                               child: const Text(
                                 'Cancelar',
@@ -64,21 +72,28 @@ class _HistorialState extends State<Historial> {
 
                     return result;
                   },
+
                   background: Container(
-                    color: Colors.red,
+                    color: Colors.redAccent,
                     child: const Icon(Icons.delete),
                   ),
                   direction: DismissDirection.endToStart,
                   child: ListTile(
-                    title: Text(
-                        snapshot.data?[index]['nombre'] ?? ''), // Cambio aquí
-                    onTap: () async {
-                      await Navigator.pushNamed(context, '/edit', arguments: {
-                        'nombre': snapshot.data?[index]['nombre'],
-                        'uID': snapshot.data?[index]['uID'],
-                      });
-                      setState(() {});
-                    },
+                    title: Text(snapshot.data?[index]['nombre'] ?? ''),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (snapshot.data?[index]['fecha'] != null)
+                          Text(
+                            DateFormat('dd/MM/yyyy HH:mm:ss').format(
+                              (snapshot.data?[index]['fecha'] as Timestamp)
+                                  .toDate(),
+                            ),
+                          )
+                        else
+                          Text('Fecha no disponible'),
+                      ],
+                    ),
                   ),
                 );
               },

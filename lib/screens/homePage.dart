@@ -1,5 +1,6 @@
 import 'package:app_control_gastos/screens/addValue.dart';
 import 'package:app_control_gastos/screens/historial.dart';
+import 'package:app_control_gastos/services/firebase_service.dart';
 import 'package:flutter/material.dart';
 
 //Icons
@@ -21,6 +22,49 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text(
           'Control de Gastos',
+        ),
+      ),
+      body: Center(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              FutureBuilder<double>(
+                future: calculateTotalExpense(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    final totalExpense = snapshot.data ?? 0;
+                    return Column(
+                      children: [
+                        Text(
+                          '\$$totalExpense',
+                          style: TextStyle(
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          'Total gastos',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blueGrey,
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: BottomAppBar(
