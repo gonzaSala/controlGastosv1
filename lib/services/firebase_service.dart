@@ -35,7 +35,7 @@ Future<void> addExpense(String name, int value) async {
   await db.collection('gastos').add({
     'nombre': name,
     'valor': value,
-    'fecha': DateTime,
+    'fecha': DateTime.now(),
   });
 }
 
