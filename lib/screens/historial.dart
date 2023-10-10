@@ -1,3 +1,4 @@
+import 'package:app_control_gastos/screens/homePage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:app_control_gastos/services/firebase_service.dart';
@@ -15,6 +16,16 @@ class _HistorialState extends State<Historial> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const HomePage(),
+              ),
+            );
+          },
+        ),
         title: const Text('Historial de gastos'),
       ),
       body: FutureBuilder(
