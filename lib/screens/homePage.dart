@@ -1,4 +1,5 @@
 import 'package:app_control_gastos/screens/addValue.dart';
+import 'package:app_control_gastos/screens/chartPage.dart';
 import 'package:app_control_gastos/screens/historial.dart';
 import 'package:app_control_gastos/services/firebase_service.dart';
 import 'package:flutter/material.dart';
@@ -82,7 +83,13 @@ class _HomePageState extends State<HomePage> {
                 ),
               );
             }),
-            bottomAction(FontAwesomeIcons.chartPie, () {}),
+            bottomAction(FontAwesomeIcons.chartPie, () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => GraficoScreen(calculoGastosSemanal: []),
+                ),
+              );
+            }),
           ],
         ),
       ),

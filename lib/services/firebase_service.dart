@@ -53,3 +53,48 @@ Future<double> calculateTotalExpense() async {
 
   return total;
 }
+
+Future<List> getExpensesForMonth(DateTime month) async {
+  List gastos = await getValue();
+  return gastos.where((expense) {
+    final DateTime fecha = expense['fecha'].toDate();
+    return fecha.year == month.year && fecha.month == month.month;
+  }).toList();
+}
+
+double calculateTotalExpensesForMonth(List gastos, DateTime month) {
+  double total = 0.0;
+  for (final expense in gastos) {
+    final DateTime fecha = expense['fecha'].toDate();
+    if (fecha.year == month.year && fecha.month == month.month) {
+      total += expense['valor'];
+    }
+  }
+  return total;
+}
+
+List<double> calculateWeeklyExpenses(List gastos) {
+  final now = DateTime.now();
+  final daysOfWeek = [
+    DateTime.monday,
+    DateTime.tuesday,
+    DateTime.wednesday,
+    DateTime.thursday,
+    DateTime.friday,
+    DateTime.saturday,
+    DateTime.sunday
+  ];
+
+  // Asegúrate de que 'gastos' tenga elementos antes de continuar
+  if (gastos.isNotEmpty) {
+    return daysOfWeek.map((day) {
+      final totalForDay = gastos
+          .where((expense) => expense['fecha'].toDate().weekday == day)
+          .fold(0.0, (sum, expense) => sum + expense['valor']);
+      return totalForDay;
+    }).toList();
+  } else {
+    // Si 'gastos' está vacío, devuelve una lista de ceros o maneja el caso vacío según tus necesidades.
+    return List.filled(7, 0.0);
+  }
+}

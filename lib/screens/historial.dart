@@ -90,10 +90,18 @@ class _HistorialState extends State<Historial> {
                   ),
                   direction: DismissDirection.endToStart,
                   child: ListTile(
-                    title: Text(snapshot.data?[index]['nombre'] ?? ''),
+                    title: Text(
+                      snapshot.data?[index]['nombre'] ?? '',
+                      style: TextStyle(fontSize: 25),
+                    ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text(
+                          '\$${snapshot.data![index]['valor'].toString()}',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 17),
+                        ),
                         if (snapshot.data?[index]['fecha'] != null)
                           Text(
                             DateFormat('dd/MM/yyyy HH:mm:ss').format(
