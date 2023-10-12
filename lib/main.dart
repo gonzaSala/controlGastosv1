@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const HomePage(),
         '/add': (context) => const AddNewExpense(),
         '/his': (context) => const Historial(),
-        '/chart': (context) => GraficoScreen(calculoGastosSemanal: []),
+        '/chart': (context) => const chartPage(),
       },
     );
   }

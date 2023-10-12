@@ -1,6 +1,7 @@
 import 'package:app_control_gastos/screens/addValue.dart';
 import 'package:app_control_gastos/screens/chartPage.dart';
 import 'package:app_control_gastos/screens/historial.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:app_control_gastos/services/firebase_service.dart';
 import 'package:flutter/material.dart';
 
@@ -29,8 +30,8 @@ class _HomePageState extends State<HomePage> {
         child: Container(
           height: MediaQuery.of(context).size.height,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               FutureBuilder<double>(
@@ -64,6 +65,8 @@ class _HomePageState extends State<HomePage> {
                   }
                 },
               ),
+
+              //
             ],
           ),
         ),
@@ -86,7 +89,7 @@ class _HomePageState extends State<HomePage> {
             bottomAction(FontAwesomeIcons.chartPie, () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => GraficoScreen(calculoGastosSemanal: []),
+                  builder: (context) => chartPage(),
                 ),
               );
             }),
