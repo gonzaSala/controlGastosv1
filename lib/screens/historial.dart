@@ -29,91 +29,130 @@ class _HistorialState extends State<Historial> {
         title: const Text('Historial de gastos'),
       ),
       body: FutureBuilder(
-        future: getValue(),
-        builder: (context, snapshot) {
+        future: FirebaseFirestore.instance
+            .collection('gastos')
+            .orderBy('fecha', descending: true)
+            .get(),
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
+            final expenses = snapshot.data!.docs;
+
+            // Crear un mapa para agrupar gastos por fecha
+            final groupedExpenses = <String, List<Map<String, dynamic>>>{};
+
+            for (var expense in expenses) {
+              final data = expense.data() as Map<String, dynamic>;
+              final fecha = DateFormat('dd/MM/yyyy').format(
+                (data['fecha'] as Timestamp).toDate(),
+              );
+
+              // Convertir el nombre a mayúsculas
+              final nameUpper = (data['nombre'] as String).toUpperCase();
+
+              if (!groupedExpenses.containsKey(fecha)) {
+                groupedExpenses[fecha] = [];
+              }
+              groupedExpenses[fecha]!.add(data);
+            }
+
             return ListView.builder(
-              itemCount: snapshot.data?.length,
+              itemCount: groupedExpenses.length,
               itemBuilder: (context, index) {
-                return Dismissible(
-                  key: Key(
-                      snapshot.data![index]['uID'].toString()), // Cambio aquí
-                  onDismissed: (direction) async {
-                    await deleteExpense(snapshot.data?[index]['uID']);
-                    setState(() {
-                      snapshot.data?.removeAt(index);
-                    });
-                  },
-                  confirmDismiss: (direction) async {
-                    bool result = false;
+                final fecha = groupedExpenses.keys.elementAt(index);
+                final gastosDelDia = groupedExpenses[fecha]!;
 
-                    result = await showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text(
-                            '¿Está seguro de que quiere eliminar el gasto de ${snapshot.data?[index]['nombre']}?',
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context, false);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                        'Se eliminó el gasto: ${snapshot.data?[index]['nombre']}'),
+                return Column(
+                  children: [
+                    Text(
+                      fecha,
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blueGrey),
+                    ),
+                    for (var expense in gastosDelDia)
+                      Dismissible(
+                        key: Key(expense['uID'].toString()),
+                        onDismissed: (direction) async {
+                          await deleteExpense(expense['uID']);
+                          setState(() {
+                            gastosDelDia.remove(expense);
+                          });
+                        },
+                        confirmDismiss: (direction) async {
+                          final result = await showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text(
+                                  '¿Está seguro de que quiere eliminar el gasto de ${expense['nombre']}?',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context, false);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                              'Se eliminó el gasto: ${expense['nombre']}'),
+                                        ),
+                                      );
+                                    },
+                                    child: const Text(
+                                      'Cancelar',
+                                      style: TextStyle(color: Colors.redAccent),
+                                    ),
                                   ),
-                                );
-                              },
-                              child: const Text(
-                                'Cancelar',
-                                style: TextStyle(color: Colors.redAccent),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context, true);
-                              },
-                              child: const Text('Sí, estoy seguro'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context, true);
+                                    },
+                                    child: const Text('Sí, estoy seguro'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
 
-                    return result;
-                  },
-
-                  background: Container(
-                    color: Colors.redAccent,
-                    child: const Icon(Icons.delete),
-                  ),
-                  direction: DismissDirection.endToStart,
-                  child: ListTile(
-                    title: Text(
-                      snapshot.data?[index]['nombre'] ?? '',
-                      style: TextStyle(fontSize: 25),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '\$${snapshot.data![index]['valor'].toString()}',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 17),
+                          return result;
+                        },
+                        background: Container(
+                          color: Colors.redAccent,
+                          child: const Icon(Icons.delete),
                         ),
-                        if (snapshot.data?[index]['fecha'] != null)
-                          Text(
-                            DateFormat('dd/MM/yyyy HH:mm:ss').format(
-                              (snapshot.data?[index]['fecha'] as Timestamp)
-                                  .toDate(),
+                        direction: DismissDirection.endToStart,
+                        child: ListTile(
+                          title: Text(
+                            expense['nombre'].toString().toUpperCase(),
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
                             ),
-                          )
-                        else
-                          Text('Fecha no disponible'),
-                      ],
-                    ),
-                  ),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '\$${expense['valor'].toString()}',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 17,
+                                ),
+                              ),
+                              if (expense['fecha'] != null)
+                                Text(
+                                  DateFormat('HH:mm:ss').format(
+                                    (expense['fecha'] as Timestamp).toDate(),
+                                  ),
+                                )
+                              else
+                                Text('Fecha no disponible'),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
                 );
               },
             );
