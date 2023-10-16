@@ -62,7 +62,8 @@ Future<List> getExpensesForMonth(DateTime month) async {
   }).toList();
 }
 
-double calculateTotalExpensesForMonth(List gastos, DateTime month) {
+Future<double> calculateTotalExpensesForMonth(
+    List gastos, DateTime month) async {
   double total = 0.0;
   for (final expense in gastos) {
     final DateTime fecha = expense['fecha'].toDate();
@@ -73,28 +74,24 @@ double calculateTotalExpensesForMonth(List gastos, DateTime month) {
   return total;
 }
 
-List<double> calculateWeeklyExpenses(List gastos) {
+Future<List<double>> calculateWeeklyExpenses() async {
+  List gastos = await getValue();
   final now = DateTime.now();
-  final daysOfWeek = [
-    DateTime.monday,
-    DateTime.tuesday,
-    DateTime.wednesday,
-    DateTime.thursday,
-    DateTime.friday,
-    DateTime.saturday,
-    DateTime.sunday
-  ];
+  final startOfWeek = DateTime(
+      now.year,
+      now.month,
+      now.day -
+          now.weekday); // Ajusta para obtener el comienzo de la semana actual
 
-  // Asegúrate de que 'gastos' tenga elementos antes de continuar
-  if (gastos.isNotEmpty) {
-    return daysOfWeek.map((day) {
-      final totalForDay = gastos
-          .where((expense) => expense['fecha'].toDate().weekday == day)
-          .fold(0.0, (sum, expense) => sum + expense['valor']);
-      return totalForDay;
-    }).toList();
-  } else {
-    // Si 'gastos' está vacío, devuelve una lista de ceros o maneja el caso vacío según tus necesidades.
-    return List.filled(7, 0.0);
-  }
+  final weeklyTotals = List<double>.generate(7, (day) {
+    final dayOfWeek = startOfWeek.add(Duration(days: day));
+    final totalForDay = gastos.where((expense) {
+      final expenseDate = expense['fecha'].toDate();
+      return expenseDate.isAfter(dayOfWeek) &&
+          expenseDate.isBefore(dayOfWeek.add(Duration(days: 1)));
+    }).fold(0.0, (sum, expense) => sum + expense['valor']);
+    return totalForDay;
+  });
+
+  return weeklyTotals;
 }

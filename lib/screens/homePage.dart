@@ -1,12 +1,10 @@
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:app_control_gastos/screens/addValue.dart';
 import 'package:app_control_gastos/screens/chartPage.dart';
 import 'package:app_control_gastos/screens/historial.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:app_control_gastos/services/firebase_service.dart';
-import 'package:flutter/material.dart';
-
-//Icons
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -22,9 +20,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Control de Gastos',
-        ),
+        title: Text('Control de Gastos'),
       ),
       body: Center(
         child: Container(
@@ -34,30 +30,51 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              FutureBuilder<double>(
-                future: calculateTotalExpense(),
+              FutureBuilder<List<double>>(
+                future: calculateWeeklyExpenses(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return CircularProgressIndicator();
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else {
-                    final totalExpense = snapshot.data ?? 0;
+                    final weeklyTotals = snapshot.data ?? List.filled(7, 0.0);
                     return Column(
                       children: [
                         Text(
-                          '\$$totalExpense',
+                          '\$${weeklyTotals.fold(0.0, (total, weeklyTotal) => total + weeklyTotal)}',
                           style: TextStyle(
                             fontSize: 40,
                             fontWeight: FontWeight.bold,
                           ),
+                          textAlign: TextAlign.left,
                         ),
                         Text(
-                          'Total gastos',
+                          'Total gastos por semana',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: Colors.blueGrey,
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                        // Puedes mostrar los totales diarios si es necesario
+                        Container(
+                          margin: EdgeInsets.only(
+                              left: 107.0, top: 22.5), // Margen a la izquierda
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              for (int i = 0; i < weeklyTotals.length; i++)
+                                Text(
+                                  'Día ${i + 1}: \$${weeklyTotals[i]}',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.blueGrey,
+                                  ),
+                                ),
+                            ],
                           ),
                         ),
                       ],
@@ -65,8 +82,6 @@ class _HomePageState extends State<HomePage> {
                   }
                 },
               ),
-
-              //
             ],
           ),
         ),
@@ -111,14 +126,14 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-}
 
-Widget bottomAction(IconData icon, Function() onTapCallback) {
-  return InkWell(
-    child: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Icon(icon),
-    ),
-    onTap: onTapCallback,
-  );
+  Widget bottomAction(IconData icon, Function() onTapCallback) {
+    return InkWell(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Icon(icon),
+      ),
+      onTap: onTapCallback,
+    );
+  }
 }
