@@ -63,20 +63,30 @@ class _HistorialState extends State<Historial> {
 
                 return Column(
                   children: [
-                    Text(
-                      fecha,
-                      style: TextStyle(
+                    Container(
+                      margin: const EdgeInsets.only(
+                        top:
+                            10.0, // Ajusta el valor del margen superior según tus preferencias
+                        bottom:
+                            1.0, // Ajusta el valor del margen inferior según tus preferencias
+                      ),
+                      child: Text(
+                        fecha,
+                        style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
-                          color: Colors.blueGrey),
+                          color: Colors.blueGrey,
+                        ),
+                      ),
                     ),
                     for (var expense in gastosDelDia)
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 2.0,
-                            right: 2.0,
-                            bottom: 10.0,
-                            top: 10.0), // Ajusta el espacio aquí
+                      Container(
+                        margin: const EdgeInsets.only(
+                          left: 0.0,
+                          right: 0.0,
+                          bottom: 4.0,
+                          top: 0.0,
+                        ), // Establece el margen aquí
                         child: Dismissible(
                           key: Key(expense['uID'].toString()),
                           onDismissed: (direction) async {

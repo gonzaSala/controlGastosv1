@@ -27,6 +27,20 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Material App',
+      theme: ThemeData(
+        appBarTheme: const AppBarTheme(
+            backgroundColor: Color.fromARGB(255, 136, 158, 94)),
+        primaryColor: Colors.black87, // Color principal de la aplicación
+        hintColor: Color.fromARGB(255, 171, 190, 90), // Color de resaltado
+        fontFamily: 'Roboto', // Tipo de fuente predeterminado
+        textTheme: TextTheme(
+          // Establece la tipografía para diferentes partes de la aplicación
+          headline6: TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
       initialRoute: '/',
       routes: {
         '/': (context) => const HomePage(),
