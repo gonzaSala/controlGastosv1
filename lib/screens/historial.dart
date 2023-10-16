@@ -71,84 +71,92 @@ class _HistorialState extends State<Historial> {
                           color: Colors.blueGrey),
                     ),
                     for (var expense in gastosDelDia)
-                      Dismissible(
-                        key: Key(expense['uID'].toString()),
-                        onDismissed: (direction) async {
-                          await deleteExpense(expense['uID']);
-                          setState(() {
-                            gastosDelDia.remove(expense);
-                          });
-                        },
-                        confirmDismiss: (direction) async {
-                          final result = await showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: Text(
-                                  '¿Está seguro de que quiere eliminar el gasto de ${expense['nombre']}?',
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context, false);
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                              'Se eliminó el gasto: ${expense['nombre']}'),
-                                        ),
-                                      );
-                                    },
-                                    child: const Text(
-                                      'Cancelar',
-                                      style: TextStyle(color: Colors.redAccent),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 2.0,
+                            right: 2.0,
+                            bottom: 10.0,
+                            top: 10.0), // Ajusta el espacio aquí
+                        child: Dismissible(
+                          key: Key(expense['uID'].toString()),
+                          onDismissed: (direction) async {
+                            await deleteExpense(expense['uID']);
+                            setState(() {
+                              gastosDelDia.remove(expense);
+                            });
+                          },
+                          confirmDismiss: (direction) async {
+                            final result = await showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text(
+                                    '¿Está seguro de que quiere eliminar el gasto de ${expense['nombre']}?',
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context, false);
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                                'Se eliminó el gasto: ${expense['nombre']}'),
+                                          ),
+                                        );
+                                      },
+                                      child: const Text(
+                                        'Cancelar',
+                                        style:
+                                            TextStyle(color: Colors.redAccent),
+                                      ),
                                     ),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context, true);
-                                    },
-                                    child: const Text('Sí, estoy seguro'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context, true);
+                                      },
+                                      child: const Text('Sí, estoy seguro'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
 
-                          return result;
-                        },
-                        background: Container(
-                          color: Colors.redAccent,
-                          child: const Icon(Icons.delete),
-                        ),
-                        direction: DismissDirection.endToStart,
-                        child: ListTile(
-                          title: Text(
-                            expense['nombre'].toString().toUpperCase(),
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            return result;
+                          },
+                          background: Container(
+                            color: Colors.redAccent,
+                            child: const Icon(Icons.delete),
                           ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '\$${expense['valor'].toString()}',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 17,
-                                ),
+                          direction: DismissDirection.endToStart,
+                          child: ListTile(
+                            title: Text(
+                              expense['nombre'].toString().toUpperCase(),
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                               ),
-                              if (expense['fecha'] != null)
+                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
                                 Text(
-                                  DateFormat('HH:mm:ss').format(
-                                    (expense['fecha'] as Timestamp).toDate(),
+                                  '\$${expense['valor'].toString()}',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 17,
                                   ),
-                                )
-                              else
-                                Text('Fecha no disponible'),
-                            ],
+                                ),
+                                if (expense['fecha'] != null)
+                                  Text(
+                                    DateFormat('HH:mm:ss').format(
+                                      (expense['fecha'] as Timestamp).toDate(),
+                                    ),
+                                  )
+                                else
+                                  Text('Fecha no disponible'),
+                              ],
+                            ),
                           ),
                         ),
                       ),
