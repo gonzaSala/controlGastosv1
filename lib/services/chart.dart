@@ -65,10 +65,10 @@ class CustomBarChart extends StatelessWidget {
         plotAreaBorderWidth: 0,
         plotAreaBackgroundColor: const Color.fromARGB(255, 28, 28, 28),
         primaryXAxis: CategoryAxis(),
-        series: <SplineSeries<ChartSampleData, String>>[
-          SplineSeries<ChartSampleData, String>(
+        series: <LineSeries<ChartSampleData, String>>[
+          LineSeries<ChartSampleData, String>(
             width: 5,
-            color: Colors.amber,
+            color: Color.fromARGB(255, 69, 91, 234),
             dataSource: chartData,
             xValueMapper: (ChartSampleData data, _) => data.x,
             yValueMapper: (ChartSampleData data, _) => data.y,
