@@ -11,6 +11,7 @@ import 'firebase_options.dart';
 import 'package:app_control_gastos/screens/homePage.dart';
 import 'package:app_control_gastos/screens/addValue.dart';
 //SERVICES
+import 'package:responsive_framework/responsive_framework.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
       title: 'Material App',
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
-            backgroundColor: Color.fromARGB(255, 136, 158, 94)),
+            backgroundColor: Color.fromARGB(146, 63, 28, 180)),
         primaryColor: Colors.black87, // Color principal de la aplicación
         hintColor: Color.fromARGB(255, 171, 190, 90), // Color de resaltado
         fontFamily: 'Roboto', // Tipo de fuente predeterminado
@@ -41,6 +42,17 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
+      builder: (context, child) => ResponsiveWrapper.builder(child,
+          maxWidth: 2460,
+          minWidth: 480,
+          defaultScale: true,
+          breakpoints: [
+            const ResponsiveBreakpoint.resize(480, name: MOBILE),
+            const ResponsiveBreakpoint.autoScale(800, name: TABLET),
+            const ResponsiveBreakpoint.resize(1080, name: DESKTOP),
+            const ResponsiveBreakpoint.autoScale(2460, name: '4k'),
+          ],
+          background: Container(color: Color.fromARGB(255, 44, 42, 42))),
       initialRoute: '/',
       routes: {
         '/': (context) => const HomePage(),

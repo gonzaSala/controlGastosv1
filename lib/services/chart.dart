@@ -1,22 +1,20 @@
-import 'package:flutter/material.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:app_control_gastos/services/firebase_service.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
 
 class OrderStats {
   final DateTime date;
   final String uID;
   final int valor;
-  charts.Color? barColor;
 
   OrderStats({
     required this.date,
     required this.uID,
     required this.valor,
-    this.barColor,
-  }) {
-    barColor = charts.ColorUtil.fromDartColor(Colors.blue);
-  }
+  });
 }
 
 Future<List<OrderStats>> getOrderStatsFromFirestore() async {
@@ -26,7 +24,7 @@ Future<List<OrderStats>> getOrderStatsFromFirestore() async {
       return OrderStats(
         date: expense['fecha'].toDate(),
         uID: expense['uID'],
-        valor: int.parse(expense['valor'].toString()),
+        valor: expense['valor'],
       );
     }).toList();
     return orderStatsList;
@@ -43,6 +41,8 @@ class CustomBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    initializeDateFormatting('es', null);
+
     final now = DateTime.now();
     final startOfWeek = now.subtract(Duration(days: now.weekday));
     final endOfWeek = startOfWeek.add(Duration(days: 7));
@@ -51,24 +51,40 @@ class CustomBarChart extends StatelessWidget {
       return stats.date.isAfter(startOfWeek) && stats.date.isBefore(endOfWeek);
     }).toList();
 
-    final seriesList = [
-      charts.Series<OrderStats, String>(
-        id: 'valor',
-        data: filteredStats,
-        domainFn: (OrderStats stats, _) {
-          return DateFormat('E')
-              .format(stats.date); // Formatear la fecha como abreviatura de día
-        },
-        measureFn: (OrderStats stats, _) => stats.valor,
-      )
-    ];
+    final List<ChartSampleData> chartData = filteredStats.map((stats) {
+      return ChartSampleData(
+        x: DateFormat('E', 'es')
+            .format(stats.date), // Formatear la fecha como abreviatura de día
+        y: stats.valor.toDouble(),
+      );
+    }).toList();
 
     return Container(
-      height: 200, // Ajustar la altura según tus necesidades
-      child: charts.BarChart(
-        seriesList,
-        animate: true,
+      height: 400, // Ajustar la altura según tus necesidades
+      child: SfCartesianChart(
+        plotAreaBorderWidth: 0,
+        plotAreaBackgroundColor: const Color.fromARGB(255, 28, 28, 28),
+        primaryXAxis: CategoryAxis(),
+        series: <SplineSeries<ChartSampleData, String>>[
+          SplineSeries<ChartSampleData, String>(
+            width: 5,
+            color: Colors.amber,
+            dataSource: chartData,
+            xValueMapper: (ChartSampleData data, _) => data.x,
+            yValueMapper: (ChartSampleData data, _) => data.y,
+          )
+        ],
       ),
     );
   }
+}
+
+class ChartSampleData {
+  final String x;
+  final double? y;
+
+  ChartSampleData({
+    required this.x,
+    required this.y,
+  });
 }

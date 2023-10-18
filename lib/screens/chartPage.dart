@@ -1,4 +1,3 @@
-import 'package:app_control_gastos/services/firebase_service.dart';
 import 'package:app_control_gastos/services/chart.dart';
 import 'package:flutter/material.dart';
 
@@ -10,9 +9,6 @@ class chartPage extends StatefulWidget {
 }
 
 class _chartPage extends State<chartPage> {
-  TextEditingController newExpenseControlName = TextEditingController();
-  TextEditingController newExpenseControlCantidad = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

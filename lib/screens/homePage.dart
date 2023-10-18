@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:app_control_gastos/screens/addValue.dart';
 import 'package:app_control_gastos/screens/chartPage.dart';
 import 'package:app_control_gastos/screens/historial.dart';
@@ -87,7 +86,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        color: const Color.fromARGB(255, 163, 191, 240),
+        color: Color.fromARGB(142, 82, 2, 255),
         notchMargin: 4.0,
         shape: const CircularNotchedRectangle(),
         child: Row(
@@ -113,8 +112,8 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blueAccent,
-        hoverColor: const Color.fromARGB(146, 0, 111, 166),
+        backgroundColor: Color.fromARGB(255, 60, 26, 229),
+        hoverColor: Color.fromARGB(146, 63, 28, 180),
         child: const Icon(Icons.add),
         onPressed: () {
           Navigator.of(context).push(
