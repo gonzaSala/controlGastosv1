@@ -47,7 +47,7 @@ class _HistorialState extends State<Historial> {
               );
 
               // Convertir el nombre a mayúsculas
-              final nameUpper = (data['nombre'] as String).toUpperCase();
+              final nameUpper = (data['categoria'] as String).toUpperCase();
 
               if (!groupedExpenses.containsKey(fecha)) {
                 groupedExpenses[fecha] = [];
@@ -101,7 +101,7 @@ class _HistorialState extends State<Historial> {
                               builder: (context) {
                                 return AlertDialog(
                                   title: Text(
-                                    '¿Está seguro de que quiere eliminar el gasto de ${expense['nombre']}?',
+                                    '¿Está seguro de que quiere eliminar el gasto de ${expense['categoria']}?',
                                   ),
                                   actions: [
                                     TextButton(
@@ -111,7 +111,7 @@ class _HistorialState extends State<Historial> {
                                             .showSnackBar(
                                           SnackBar(
                                             content: Text(
-                                                'Se eliminó el gasto: ${expense['nombre']}'),
+                                                'Se eliminó el gasto: ${expense['categoria']}'),
                                           ),
                                         );
                                       },
@@ -141,7 +141,7 @@ class _HistorialState extends State<Historial> {
                           direction: DismissDirection.endToStart,
                           child: ListTile(
                             title: Text(
-                              expense['nombre'].toString().toUpperCase(),
+                              expense['categoria'].toString().toUpperCase(),
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

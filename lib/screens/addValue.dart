@@ -9,7 +9,7 @@ class AddNewExpense extends StatefulWidget {
 }
 
 class _AddNewExpenseState extends State<AddNewExpense> {
-  TextEditingController newExpenseControlName = TextEditingController();
+  TextEditingController newExpenseControlCategoria = TextEditingController();
   TextEditingController newExpenseControlCantidad = TextEditingController();
 
   @override
@@ -22,8 +22,8 @@ class _AddNewExpenseState extends State<AddNewExpense> {
         padding: const EdgeInsets.all(15.0),
         child: Column(children: [
           TextField(
-            controller: newExpenseControlName,
-            decoration: const InputDecoration(hintText: 'Ingrese el nombre'),
+            controller: newExpenseControlCategoria,
+            decoration: const InputDecoration(hintText: 'Ingrese la categoria'),
           ),
           TextField(
             controller: newExpenseControlCantidad,
@@ -32,7 +32,7 @@ class _AddNewExpenseState extends State<AddNewExpense> {
           Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
             ElevatedButton(
                 onPressed: () async {
-                  await addExpense(newExpenseControlName.text,
+                  await addExpense(newExpenseControlCategoria.text,
                           int.parse(newExpenseControlCantidad.text))
                       .then((_) {
                     Navigator.pop(context);

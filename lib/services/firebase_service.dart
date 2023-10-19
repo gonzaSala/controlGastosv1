@@ -15,7 +15,7 @@ Future<List> getValue() async {
 
     print('Fecha en Firestore: ${data['fecha']}');
     final expense = {
-      'nombre': data['nombre'],
+      'categoria': data['categoria'],
       'valor': data['valor'],
       'uID': doc.id,
       'fecha': data['fecha'],
@@ -33,7 +33,7 @@ Future<void> addExpense(String name, int value) async {
   print('Fecha a guardar: $now');
 
   await db.collection('gastos').add({
-    'nombre': name,
+    'categoria': name,
     'valor': value,
     'fecha': DateTime.now(),
   });
