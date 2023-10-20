@@ -29,8 +29,8 @@ class _chartPage extends State<chartPage> {
                 } else {
                   final orderStats = snapshot.data ?? [];
                   return Container(
-                    height: 250,
-                    padding: const EdgeInsets.all(10),
+                    height: 400,
+                    padding: const EdgeInsets.all(5),
                     child: CustomBarChart(
                       orderStats: orderStats,
                     ),

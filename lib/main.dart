@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 //FIREBASE
 import 'package:firebase_core/firebase_core.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'firebase_options.dart';
 //HOME
 import 'package:app_control_gastos/screens/homePage.dart';
@@ -18,7 +19,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+
+  initializeDateFormatting('es', null).then((_) {
+    runApp(MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {

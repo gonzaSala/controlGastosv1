@@ -3,15 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_core/theme.dart';
 
 class OrderStats {
-  final DateTime date;
+  final DateTime fecha;
   final String uID;
   final int valor;
 
   OrderStats({
-    required this.date,
+    required this.fecha,
     required this.uID,
     required this.valor,
   });
@@ -22,7 +21,7 @@ Future<List<OrderStats>> getOrderStatsFromFirestore() async {
     final gastos = await getValue();
     final orderStatsList = gastos.map((expense) {
       return OrderStats(
-        date: expense['fecha'].toDate(),
+        fecha: expense['fecha'].toDate(),
         uID: expense['uID'],
         valor: expense['valor'],
       );
@@ -36,26 +35,44 @@ Future<List<OrderStats>> getOrderStatsFromFirestore() async {
 
 class CustomBarChart extends StatelessWidget {
   final List<OrderStats> orderStats;
+  List<String> diasDeLaSemana = [
+    'Lun',
+    'Mar',
+    'Mié',
+    'Jue',
+    'Vie',
+    'Sáb',
+    'Dom'
+  ];
 
   CustomBarChart({required this.orderStats});
 
   @override
   Widget build(BuildContext context) {
-    initializeDateFormatting('es', null);
+    Map<String, double> calcularGastosDiarios(List<OrderStats> orderStats) {
+      final gastosDiarios = Map<String, double>.fromIterable(diasDeLaSemana,
+          key: (dia) => dia, value: (_) => 0);
 
-    final now = DateTime.now();
-    final startOfWeek = now.subtract(Duration(days: now.weekday));
-    final endOfWeek = startOfWeek.add(Duration(days: 7));
+      for (var stats in orderStats) {
+        final dia = DateFormat('E', 'es').format(stats.fecha).toString();
+        if (stats.valor != null) {
+          gastosDiarios[dia] ??= 0.0;
+          gastosDiarios[dia] = gastosDiarios[dia]! + stats.valor.toDouble();
+        } else {
+          gastosDiarios[dia] ??= 0.0;
+        }
+      }
 
-    final filteredStats = orderStats.where((stats) {
-      return stats.date.isAfter(startOfWeek) && stats.date.isBefore(endOfWeek);
-    }).toList();
+      return gastosDiarios;
+    }
 
-    final List<ChartSampleData> chartData = filteredStats.map((stats) {
+    final gastosDiarios = calcularGastosDiarios(orderStats);
+
+    final todosLosDias = diasDeLaSemana.map((dia) {
+      final valor = gastosDiarios[dia] ?? 0.0;
       return ChartSampleData(
-        x: DateFormat('E', 'es')
-            .format(stats.date), // Formatear la fecha como abreviatura de día
-        y: stats.valor.toDouble(),
+        x: dia, // Día de la semana
+        y: valor, // Valor total de gastos
       );
     }).toList();
 
@@ -69,7 +86,7 @@ class CustomBarChart extends StatelessWidget {
           LineSeries<ChartSampleData, String>(
             width: 5,
             color: Color.fromARGB(255, 69, 91, 234),
-            dataSource: chartData,
+            dataSource: todosLosDias,
             xValueMapper: (ChartSampleData data, _) => data.x,
             yValueMapper: (ChartSampleData data, _) => data.y,
           )
@@ -81,7 +98,7 @@ class CustomBarChart extends StatelessWidget {
 
 class ChartSampleData {
   final String x;
-  final double? y;
+  final double y;
 
   ChartSampleData({
     required this.x,
