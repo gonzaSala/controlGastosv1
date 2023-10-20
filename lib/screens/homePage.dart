@@ -15,6 +15,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  Map<int, String> dayNames = {
+    1: 'Lunes',
+    2: 'Martes',
+    3: 'Miércoles',
+    4: 'Jueves',
+    5: 'Viernes',
+    6: 'Sábado',
+    7: 'Domingo',
+  };
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +53,7 @@ class _HomePageState extends State<HomePage> {
                         Text(
                           '\$${weeklyTotals.fold(0.0, (total, weeklyTotal) => total + weeklyTotal)}',
                           style: TextStyle(
-                            fontSize: 40,
+                            fontSize: 50,
                             fontWeight: FontWeight.bold,
                           ),
                           textAlign: TextAlign.left,
@@ -51,7 +61,7 @@ class _HomePageState extends State<HomePage> {
                         Text(
                           'Total gastos por semana',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 26,
                             fontWeight: FontWeight.bold,
                             color: Colors.blueGrey,
                           ),
@@ -67,9 +77,9 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               for (int i = 0; i < weeklyTotals.length; i++)
                                 Text(
-                                  'Día ${i + 1}: \$${weeklyTotals[i]}',
+                                  '${dayNames[i + 1]}: \$${weeklyTotals[i]}',
                                   style: TextStyle(
-                                    fontSize: 20,
+                                    fontSize: 25,
                                     color: Colors.blueGrey,
                                   ),
                                 ),
